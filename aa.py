@@ -15,6 +15,7 @@ class worker:
     def log_res(self,res):
         ts = datetime.datetime.now().isoformat(' ')
         sys.stdout.write(f'{ts} {res}\n')
+        if '已达到上限' in res:return
         if res:
             self.alive = time.time()
 
