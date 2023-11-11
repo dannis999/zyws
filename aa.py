@@ -69,6 +69,7 @@ class worker:
         await self.get(url)
     
     async def worker(self):
+        suf = None
         while True:
             if self.mode == 1:
                 suf = random.choice(['top','cloud','monster','site','cyou','buzz'])
