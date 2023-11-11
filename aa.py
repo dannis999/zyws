@@ -1,4 +1,4 @@
-import asyncio,aiohttp,random,sys,ssl,datetime,time,re
+import asyncio,aiohttp,random,sys,ssl,datetime,time,re,json
 from faker import Faker
 import urllib.parse as parse
 
@@ -17,6 +17,10 @@ class worker:
         ts = datetime.datetime.now().isoformat(' ')
         no = '已达到上限' in res
         res = re.sub(r'\s+',' ',res)
+        try:
+            res = str(json.loads(res))
+        except Exception:
+            pass
         if len(res) > log_limit:
             res = res[:log_limit]
         sys.stdout.write(f'{ts} {res}\n')
