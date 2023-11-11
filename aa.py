@@ -1,4 +1,4 @@
-import asyncio,aiohttp,random,sys,ssl,datetime,time
+import asyncio,aiohttp,random,sys,ssl,datetime,time,re
 from faker import Faker
 import urllib.parse as parse
 
@@ -16,6 +16,7 @@ class worker:
     def log_res(self,res,log_limit=50):
         ts = datetime.datetime.now().isoformat(' ')
         no = '已达到上限' in res
+        res = re.sub(r'\s+',' ',res)
         if len(res) > log_limit:
             res = res[:log_limit]
         sys.stdout.write(f'{ts} {res}\n')
