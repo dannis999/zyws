@@ -46,7 +46,7 @@ class worker:
     
     async def worker(self):
         while True:
-            suf = random.choice(['top','cloud','monster','site'])
+            suf = random.choice(['top','cloud','monster','site','cyou','buzz'])
             func = random.choice([self.worker1,self.worker2])
             try:
                 await func(suf)
