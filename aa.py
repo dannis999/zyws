@@ -11,7 +11,10 @@ ssl_context.verify_mode = ssl.CERT_NONE
 class worker:
     async def post(self,url,data):
         session = self.session
-        async with session.post(url, json=data, ssl=ssl_context) as response:
+        headers = {
+            'User-Agent': faker.user_agent(),
+        }
+        async with session.post(url, headers=headers, json=data, ssl=ssl_context) as response:
             res = await response.json()
         ts = datetime.datetime.now().isoformat(' ')
         sys.stdout.write(f'{ts} {res}\n')
