@@ -1,7 +1,4 @@
-on:
-  push
-  schedule:
-    - cron: "0 * * * *"
+on: push
 jobs:
   joba:
     runs-on: ubuntu-latest
