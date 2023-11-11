@@ -13,10 +13,13 @@ class worker:
     def __init__(self,mode=1):
         self.mode = mode
 
-    def log_res(self,res):
+    def log_res(self,res,log_limit=50):
         ts = datetime.datetime.now().isoformat(' ')
+        no = '已达到上限' in res
+        if len(res) > log_limit:
+            res = res[:log_limit]
         sys.stdout.write(f'{ts} {res}\n')
-        if '已达到上限' in res:return
+        if no:return
         if res:
             self.alive = time.time()
 
