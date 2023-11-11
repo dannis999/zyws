@@ -9,6 +9,9 @@ ssl_context.check_hostname = False
 ssl_context.verify_mode = ssl.CERT_NONE
 
 class worker:
+    def __init__(self,mode=1):
+        self.mode = mode
+
     def log_res(self,res):
         ts = datetime.datetime.now().isoformat(' ')
         sys.stdout.write(f'{ts} {res}\n')
@@ -67,8 +70,11 @@ class worker:
     
     async def worker(self):
         while True:
-            suf = random.choice(['top','cloud','monster','site','cyou','buzz'])
-            func = random.choice([self.worker1,self.worker2])
+            if self.mode == 1:
+                suf = random.choice(['top','cloud','monster','site','cyou','buzz'])
+                func = random.choice([self.worker1,self.worker2])
+            elif self.mode == 2:
+                func = self.worker3
             try:
                 await func(suf)
             except Exception as e:
@@ -92,7 +98,7 @@ async def main_gh():
     await w.run(3600)
 
 async def main_my():
-    w = worker()
+    w = worker(mode=2)
     await w.run(86400)
 
 if __name__ == '__main__':
