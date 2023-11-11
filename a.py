@@ -3,8 +3,11 @@ from faker import Faker
 import datetime
 import threading
 
-ssl._create_default_https_context = ssl._create_unverified_context
 faker = Faker('zh-cn')
+
+ssl._create_default_https_context = ssl._create_unverified_context
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 def worker1(suf):
     name = faker.phone_number()
@@ -14,7 +17,7 @@ def worker1(suf):
         'username':name,
         'area':faker.province() + faker.city(),
         }
-    response = requests.post(url, json=data)
+    response = requests.post(url, json=data, verify=False)
     ts = datetime.datetime.now().isoformat(' ')
     sys.stdout.write(f'{ts} {response.json()}\n')
     
@@ -23,7 +26,7 @@ def worker1(suf):
         'name':name,
         'code':''.join(map(str,(random.randrange(10) for _ in range(6)))),
         }
-    response = requests.post(url, json=data)
+    response = requests.post(url, json=data, verify=False)
     ts = datetime.datetime.now().isoformat(' ')
     sys.stdout.write(f'{ts} {response.json()}\n')
 
@@ -36,7 +39,7 @@ def worker2(suf):
         'password':faker.password(),
         'area':faker.province() + faker.city(),
         }
-    response = requests.post(url, json=data)
+    response = requests.post(url, json=data, verify=False)
     ts = datetime.datetime.now().isoformat(' ')
     sys.stdout.write(f'{ts} {response.json()}\n')
 
