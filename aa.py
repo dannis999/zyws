@@ -9,17 +9,29 @@ ssl_context.check_hostname = False
 ssl_context.verify_mode = ssl.CERT_NONE
 
 class worker:
+    def log_res(self,res):
+        ts = datetime.datetime.now().isoformat(' ')
+        sys.stdout.write(f'{ts} {res}\n')
+        if res:
+            self.alive = time.time()
+
     async def post(self,url,data):
         session = self.session
         headers = {
             'User-Agent': faker.user_agent(),
         }
         async with session.post(url, headers=headers, json=data, ssl=ssl_context) as response:
-            res = await response.json()
-        ts = datetime.datetime.now().isoformat(' ')
-        sys.stdout.write(f'{ts} {res}\n')
-        if res:
-            self.alive = time.time()
+            res = await response.text()
+        self.log_res(res)
+
+    async def get(self,url):
+        session = self.session
+        headers = {
+            'User-Agent': faker.user_agent(),
+        }
+        async with session.get(url, headers=headers, ssl=ssl_context) as response:
+            res = await response.text()
+        self.log_res(res)
 
     async def worker1(self,suf):
         name = faker.phone_number()
@@ -48,6 +60,10 @@ class worker:
             'area':faker.province() + faker.city(),
         }
         await self.post(url,data)
+
+    async def worker3(self):
+        url = 'https://apis.map.qq.com/ws/location/v1/ip?key=PTMBZ-GCQLW-SC2RG-R2FNI-HWPNQ-4PBQM'
+        await self.get(url)
     
     async def worker(self):
         while True:
