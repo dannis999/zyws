@@ -84,10 +84,15 @@ class worker:
     async def run(self,tlimit=120):
         tasks = []
         self.alive = time.time()
+        if self.mode == 2:
+            n_max = 10
+        else:
+            n_max = 100000000
         async with aiohttp.ClientSession() as session:
             self.session = session
             for _ in range(tlimit):
                 for _ in range(10):
+                    if len(tasks) >= n_max:break
                     tasks.append(asyncio.Task(self.worker()))
                 await asyncio.sleep(1)
                 if time.time() - self.alive > 60:break
@@ -96,6 +101,10 @@ class worker:
 
 async def main_gh():
     w = worker()
+    await w.run(3600)
+
+async def main_gh2():
+    w = worker(mode=2)
     await w.run(3600)
 
 async def main_my():
