@@ -115,7 +115,7 @@ class worker:
         tasks = []
         self.alive = time.time()
         if self.mode == 2:
-            n_max = 10
+            n_max = 100
         else:
             n_max = 100000000
         async with aiohttp.ClientSession() as session:
