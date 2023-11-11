@@ -80,7 +80,7 @@ class worker:
         x2 = random.uniform(0,90)
         y2 = random.uniform(0,180)
         t = random.randrange(10)
-        if t == 0:
+        if t == 0: # https://apis.map.qq.com/ws/location/v1/ip?key=PTMBZ-GCQLW-SC2RG-R2FNI-HWPNQ-4PBQM
             url = f'{entry}ws/location/v1/ip?key={key}'
         elif t == 1:
             url = f'{entry}ws/geocoder/v1/?address={city}&key={key}'
