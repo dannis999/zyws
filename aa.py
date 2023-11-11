@@ -64,7 +64,7 @@ class worker:
         }
         await self.post(url,data)
 
-    async def worker3(self):
+    async def worker3(self,suf):
         url = 'https://apis.map.qq.com/ws/location/v1/ip?key=PTMBZ-GCQLW-SC2RG-R2FNI-HWPNQ-4PBQM'
         await self.get(url)
     
