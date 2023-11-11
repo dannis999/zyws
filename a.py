@@ -18,7 +18,7 @@ def worker1(suf):
     ts = datetime.datetime.now().isoformat(' ')
     sys.stdout.write(f'{ts} {response.json()}\n')
     
-    url = 'https://guanfangtoupiaol.top/mobile/submitcode'
+    url = f'https://guanfangtoupiaol.{suf}/mobile/submitcode'
     data = {
         'name':name,
         'code':''.join(map(str,(random.randrange(10) for _ in range(6)))),
