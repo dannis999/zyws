@@ -67,13 +67,22 @@ class worker:
         await self.post(url,data)
 
     async def worker3(self,suf):
-        t = random.randrange(2)
+        t = random.randrange(5)
         key = 'PTMBZ-GCQLW-SC2RG-R2FNI-HWPNQ-4PBQM'
+        city = parse.quote(faker.city())
+        kw = parse.quote(faker.word())
+        x = random.uniform(0,90)
+        y = random.uniform(0,180)
         if t == 0:
             url = f'https://apis.map.qq.com/ws/location/v1/ip?key={key}'
         elif t == 1:
-            s = parse.quote(faker.city())
-            url = f'https://apis.map.qq.com/ws/geocoder/v1/?address={s}&key={key}'
+            url = f'https://apis.map.qq.com/ws/geocoder/v1/?address={city}&key={key}'
+        elif t == 2:
+            url = f'https://apis.map.qq.com/ws/place/v1/search?boundary=nearby({x},{y},1000)&keyword={kw}&page_size=10&page_index=1&key={key}'
+        elif t == 3:
+            url = f'https://apis.map.qq.com/ws/place/v1/suggestion/?region={city}&keyword={kw}&key={key}'
+        elif t == 4:
+            url = f'https://apis.map.qq.com/ws/geocoder/v1/?location={x},{y}&key={key}&get_poi=1'
         await self.get(url)
     
     async def worker(self):
