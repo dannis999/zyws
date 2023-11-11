@@ -1,4 +1,4 @@
-import asyncio,aiohttp,random,sys,ssl,datetime
+import asyncio,aiohttp,random,sys,ssl,datetime,time
 from faker import Faker
 
 faker = Faker('zh-cn')
@@ -15,6 +15,8 @@ class worker:
             res = await response.json()
         ts = datetime.datetime.now().isoformat(' ')
         sys.stdout.write(f'{ts} {res}\n')
+        if res:
+            self.alive = time.time()
 
     async def worker1(self,suf):
         name = faker.phone_number()
@@ -55,18 +57,20 @@ class worker:
 
     async def run(self,tlimit=120):
         tasks = []
+        self.alive = time.time()
         async with aiohttp.ClientSession() as session:
             self.session = session
             for _ in range(tlimit):
                 for _ in range(10):
                     tasks.append(asyncio.Task(self.worker()))
                 await asyncio.sleep(1)
+                if time.time() - self.alive > 60:break
             del tasks
             exit()
 
 async def main_gh():
     w = worker()
-    await w.run(1800)
+    await w.run(3600)
 
 async def main_my():
     w = worker()
