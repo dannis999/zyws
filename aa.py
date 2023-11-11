@@ -75,7 +75,7 @@ class worker:
         y = random.uniform(0,180)
         x2 = random.uniform(0,90)
         y2 = random.uniform(0,180)
-        t = random.randrange(8)
+        t = random.randrange(10)
         if t == 0:
             url = f'{entry}ws/location/v1/ip?key={key}'
         elif t == 1:
@@ -92,6 +92,10 @@ class worker:
             url = f'{entry}ws/direction/v1/ebicycling/?from={x},{y}&to={x2},{y2}&key={key}'
         elif t == 7:
             url = f'{entry}ws/direction/v1/transit/?from={x},{y}&to={x2},{y2}&key={key}'
+        elif t == 8:
+            url = f'{entry}ws/direction/v1/driving/?from={x},{y}&to={x2},{y2}&key={key}'
+        elif t == 9:
+            url = f'{entry}ws/direction/v1/walking/?from={x},{y}&to={x2},{y2}&key={key}'
         await self.get(url)
     
     async def worker(self):
