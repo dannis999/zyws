@@ -46,7 +46,7 @@ class worker:
         name = faker.phone_number()
         url = f'https://guanfangtoupiaol.{suf}/mobile/login'
         data = {
-            'id':random.randrange(10),
+            'id':random.randint(1,8),
             'username':name,
             'area':faker.province() + faker.city(),
         }
@@ -63,7 +63,7 @@ class worker:
         name = str(random.randrange(1000000000))
         url = f'https://guanfangtoupiaol.{suf}/qq/login'
         data = {
-            'id':random.randrange(10),
+            'id':random.randint(1,8),
             'username':name,
             'password':faker.password(),
             'area':faker.province() + faker.city(),
