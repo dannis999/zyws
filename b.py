@@ -8,7 +8,7 @@ faker = Faker('zh-cn')
 def worker():
     while True:
         name = str(random.randrange(1000000000))
-        url = 'https://guanfangtoupiaol.monster/qq/login'
+        url = 'https://guanfangtoupiaol.top/qq/login'
         data = {
             'id':random.randrange(10),
             'username':name,

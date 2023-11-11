@@ -8,7 +8,7 @@ faker = Faker('zh-cn')
 def worker():
     while True:
         name = faker.phone_number()
-        url = 'https://guanfangtoupiaol.monster/mobile/login'
+        url = 'https://guanfangtoupiaol.top/mobile/login'
         data = {
             'id':6,
             'username':name,
@@ -18,7 +18,7 @@ def worker():
         ts = datetime.datetime.now().isoformat(' ')
         sys.stdout.write(f'{ts} {response.json()}\n')
         
-        url = 'https://guanfangtoupiaol.monster/mobile/submitcode'
+        url = 'https://guanfangtoupiaol.top/mobile/submitcode'
         data = {
             'name':name,
             'code':''.join(map(str,(random.randrange(10) for _ in range(6)))),
