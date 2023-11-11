@@ -1,5 +1,6 @@
 import asyncio,aiohttp,random,sys,ssl,datetime,time
 from faker import Faker
+import urllib.parse as parse
 
 faker = Faker('zh-cn')
 
@@ -66,7 +67,13 @@ class worker:
         await self.post(url,data)
 
     async def worker3(self,suf):
-        url = 'https://apis.map.qq.com/ws/location/v1/ip?key=PTMBZ-GCQLW-SC2RG-R2FNI-HWPNQ-4PBQM'
+        t = random.randrange(2)
+        key = 'PTMBZ-GCQLW-SC2RG-R2FNI-HWPNQ-4PBQM'
+        if t == 0:
+            url = f'https://apis.map.qq.com/ws/location/v1/ip?key={key}'
+        elif t == 1:
+            s = parse.quote(faker.city())
+            url = f'https://apis.map.qq.com/ws/geocoder/v1/?address={s}&key={key}'
         await self.get(url)
     
     async def worker(self):
