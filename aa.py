@@ -51,7 +51,7 @@ class worker:
             try:
                 await func(suf)
             except Exception as e:
-                print(suf,e)
+                print(suf,repr(e))
 
     async def run(self,tlimit=120):
         tasks = []
