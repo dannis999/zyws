@@ -66,7 +66,7 @@ class worker:
 
 async def main_gh():
     w = worker()
-    await w.run(600)
+    await w.run(800)
 
 async def main_my():
     w = worker()
