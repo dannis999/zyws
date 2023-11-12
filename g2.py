@@ -164,7 +164,9 @@ class worker:
         headers = get_headers()
         html = await self.get(host,headers=headers)
         t = re.escape(host)
-        pt = rf'a href\=\"({t}[a-z/]+/login\?id=)\d+\"\s+onclick=\"window.alert([^)">]+?)\"'
+        # <a href="https://guanfangtoupiaol.top/mobile/login?id=8"
+		# onclick="window.alert(&#39;为了防止刷票，请填使用手机验证&#39;)">
+        pt = rf'a href\=\"({t}[a-z/]+/login\?id=)\d+\"\s+onclick=\"window\.alert\([^)">]+?\)\"'
         nexts = re.findall(pt,html)
         if not nexts:
             print(host)
