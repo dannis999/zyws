@@ -15,6 +15,12 @@ def get_ts():
 def get_ua():
     return faker.user_agent()
 
+def get_id():
+    return str(random.randint(1,8))
+
+def get_phone():
+    return str(faker.phone_number())
+
 def get_area():
     return faker.province() + faker.city()
 
@@ -138,6 +144,40 @@ class worker:
         except Exception as e:
             print('toupiao','home',repr(e))
             return 'err'
+        t = re.escape(host)
+        t2 = re.escape('onclick="window.alert(&#39;为了防止刷票，请填使用手机验证&#39;)"')
+        pt = rf'a href\=\"({t}[a-z/]+/login\?id=\d+)\"\s+{t2}'
+        nexts = re.findall(pt,html)
+        if not nexts:
+            print(host)
+            print(html)
+            return 'err'
+        url = random.choice(next)
+        try:
+            html = await self.get(url,headers=headers)
+        except Exception as e:
+            print('toupiao',url,repr(e))
+            return 'err'
+        pt = rf"url\:\s*\'({t}[a-z/]+/login)\'"
+        nexts = re.findall(pt,html)
+        if not nexts:
+            print(host)
+            print(html)
+            return 'err'
+        url = nexts[0]
+        if 'mobile' in url:
+            data = {
+                'id':get_id(),
+                'username':get_phone(),
+                'area':get_area(),
+            }
+            r = await self.post(url,json=data,headers=headers)
+            if r['code'] != 200:
+                print('toupiao','mobile',r)
+                return 'err'
+            print('toupiao','mobile',data)
+        
+
         return 'ok'
     
     async def task_toupiao(self,suf):
