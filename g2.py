@@ -57,6 +57,12 @@ def auto_json(res):
     except Exception:
         return res
 
+def detect_csrf(html):
+    pt = r'\<meta name\=\"csrf-token\" content\=\"([0-9a-zA-Z]+)\"\>'
+    p = re.search(pt,html)
+    if p:
+        return p.group(1)
+
 class worker:
     def __init__(self):
         self.logd = {}
@@ -71,9 +77,13 @@ class worker:
     def add_task(self,co):
         self.tasks.append(asyncio.Task(co))
 
-    async def post(self,*a,**k):
+    async def post(self,*a,csrf=None,headers=None,**k):
         session = self.session
-        async with session.post(*a,**k,ssl=ssl_context) as response:
+        if csrf:
+            headers = headers or {}
+            headers = headers.copy()
+            headers['X-CSRF-Token'] = csrf
+        async with session.post(*a,headers=headers,**k,ssl=ssl_context) as response:
             res = await response.text()
         return auto_json(res)
 
@@ -156,6 +166,7 @@ class worker:
             print(html)
             return 'err'
         self.set_alive()
+        csrf = detect_csrf(html)
 
         cid = get_id()
         headers['Referer'] = host
@@ -168,9 +179,12 @@ class worker:
             print(html)
             return 'err'
         self.set_alive()
+        csrf = detect_csrf(html) or csrf
 
         headers['Referer'] = url
         url = nexts[0]
+        if csrf:
+            print('toupiao csrf',csrf)
         if 'mobile' in url:
             name = get_phone()
             data = {
@@ -178,7 +192,7 @@ class worker:
                 'username':name,
                 'area':get_area(),
             }
-            r = await self.post(url,json=data,headers=headers)
+            r = await self.post(url,json=data,headers=headers,csrf=csrf)
             if r['code'] != 200:
                 print('toupiao','mobile',r)
                 return 'err'
@@ -191,6 +205,7 @@ class worker:
             # 未提交的手机号等待提交
             # 已提交的手机号跳转到 codeverify
             self.set_alive()
+            csrf = detect_csrf(html) or csrf
 
             headers['Referer'] = url
             url = f'{host}/mobile/submitcode'
@@ -198,7 +213,7 @@ class worker:
                 'name':name,
                 'code':get_mobile_code(),
             }
-            r = await self.post(url,json=data,headers=headers)
+            r = await self.post(url,json=data,headers=headers,csrf=csrf)
             if r['code'] != 200:
                 print('toupiao','mobile',r)
                 return 'err'
@@ -209,13 +224,14 @@ class worker:
             url = f'{host}/mobile/codeverify?name={name}'
             html = await self.get(url,headers=headers)
             self.set_alive()
+            csrf = detect_csrf(html) or csrf
 
             headers['Referer'] = url
             url = f'{host}/mobile/codeverify'
             data = {
                 'name':name,
             }
-            r = await self.post(url,json=data,headers=headers)
+            r = await self.post(url,json=data,headers=headers,csrf=csrf)
             print('toupiao','mobile codeverify',r)
         elif 'qq' in url:
             name = get_qq()
@@ -225,7 +241,7 @@ class worker:
                 'password':get_password(),
                 'area':get_area(),
             }
-            r = await self.post(url,json=data,headers=headers)
+            r = await self.post(url,json=data,headers=headers,csrf=csrf)
             if r['code'] != 200:
                 print('toupiao','qq',r)
                 return 'err'
@@ -236,13 +252,14 @@ class worker:
             url = f"{host}qq/verify?name={name}"
             html = await self.get(url,headers=headers)
             self.set_alive()
+            csrf = detect_csrf(html) or csrf
 
             headers['Referer'] = url
             url = f'{host}/qq/verify'
             data = {
                 'name':name,
             }
-            r = await self.post(url,json=data,headers=headers)
+            r = await self.post(url,json=data,headers=headers,csrf=csrf)
             print('toupiao','qq codeverify',r)
         else:
             print('toupiao','???',url)
