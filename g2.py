@@ -171,7 +171,9 @@ class worker:
             print('toupiao','mobile',data)
             url = f"{host}mobile/code?name={name}"
             html = await self.get(url,headers=headers)
-            # proc html
+            # 错误的手机号跳转到首页
+            # 未提交的手机号等待提交
+            # 已提交的手机号跳转到 codeverify
             url = f'{host}/mobile/submitcode'
             data = {
                 'name':name,
@@ -182,10 +184,9 @@ class worker:
                 print('toupiao','mobile',r)
                 return 'err'
             print('toupiao','mobile submitcode',data)
-            #
+            # 提交后跳转
             url = f'{host}/mobile/codeverify?name={name}'
             html = await self.get(url,headers=headers)
-            #
             url = f'{host}/mobile/codeverify'
             data = {
                 'name':name,
@@ -193,9 +194,10 @@ class worker:
             r = await self.post(url,json=data,headers=headers)
             print('toupiao','mobile codeverify',r)
         elif 'qq' in url:
+            name = str(random.randrange(1000000000))
             data = {
                 'id':get_id(),
-                'username':str(random.randrange(1000000000)),
+                'username':name,
                 'password':get_password(),
                 'area':get_area(),
             }
@@ -204,6 +206,15 @@ class worker:
                 print('toupiao','qq',r)
                 return 'err'
             print('toupiao','qq',data)
+            # 提交后跳转
+            url = f"{host}qq/verify?name={name}"
+            html = await self.get(url,headers=headers)
+            url = f'{host}/qq/verify'
+            data = {
+                'name':name,
+            }
+            r = await self.post(url,json=data,headers=headers)
+            print('toupiao','qq codeverify',r)
         else:
             print('toupiao','???',url)
         return 'ok'
