@@ -142,13 +142,17 @@ class worker:
         html = await self.get(host,headers=headers)
         t = re.escape(host)
         t2 = re.escape('onclick="window.alert(&#39;为了防止刷票，请填使用手机验证&#39;)"')
-        pt = rf'a href\=\"({t}[a-z/]+/login\?id=\d+)\"\s+{t2}'
+        pt = rf'a href\=\"({t}[a-z/]+/login\?id=)\d+\"\s+{t2}'
         nexts = re.findall(pt,html)
         if not nexts:
             print(host)
             print(html)
             return 'err'
-        url = random.choice(nexts)
+        self.set_alive()
+
+        cid = get_id()
+        headers['Referer'] = host
+        url = random.choice(nexts) + str(cid)
         html = await self.get(url,headers=headers)
         pt = rf"url\:\s*\'({t}[a-z/]+/login)\'"
         nexts = re.findall(pt,html)
@@ -156,11 +160,14 @@ class worker:
             print(host)
             print(html)
             return 'err'
+        self.set_alive()
+
+        headers['Referer'] = url
         url = nexts[0]
         if 'mobile' in url:
             name = get_phone()
             data = {
-                'id':get_id(),
+                'id':cid,
                 'username':name,
                 'area':get_area(),
             }
@@ -170,11 +177,15 @@ class worker:
                 return 'err'
             print('toupiao','mobile',data)
             self.set_alive()
+
             url = f"{host}mobile/code?name={name}"
             html = await self.get(url,headers=headers)
             # 错误的手机号跳转到首页
             # 未提交的手机号等待提交
             # 已提交的手机号跳转到 codeverify
+            self.set_alive()
+
+            headers['Referer'] = url
             url = f'{host}/mobile/submitcode'
             data = {
                 'name':name,
@@ -186,10 +197,13 @@ class worker:
                 return 'err'
             print('toupiao','mobile submitcode',data)
             self.set_alive()
+
             # 提交后跳转
             url = f'{host}/mobile/codeverify?name={name}'
             html = await self.get(url,headers=headers)
             self.set_alive()
+
+            headers['Referer'] = url
             url = f'{host}/mobile/codeverify'
             data = {
                 'name':name,
