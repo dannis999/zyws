@@ -37,7 +37,10 @@ class wbSaver:
         url = self.url + '/' + url
         async with self.session.post(url,headers=headers,json=data) as response:
             r = await response.text()
-        return r
+            if response.status_code == 200:
+                print('ok')
+            else:
+                print(r.text)
 
     @property
     def wait(self):
@@ -47,12 +50,9 @@ class wbSaver:
         '返回name,msg'
         print(url)
         try:
-            r = await self.save_req(url)
+            await self.save_req(url)
         except Exception as e:
             print(repr(e))
-        else:
-            if r.status_code != 200:
-                print(r.text)
 
     async def run(self):
         urls = list(url_iter())
