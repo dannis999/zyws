@@ -1,7 +1,7 @@
 import asyncio
 from g2 import *
 
-hosts = []
+hosts = ['https://apis.map.qq.com/ws/location/v1/ip?key=PTMBZ-GCQLW-SC2RG-R2FNI-HWPNQ-4PBQM']
 def url_iter():
     sufs = ['top','cloud','monster','site','cyou','buzz']
     for suf in sufs:
