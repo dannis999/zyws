@@ -1,3 +1,4 @@
+import asyncio
 from g2 import *
 
 hosts = []
@@ -41,10 +42,12 @@ class wbSaver:
             r = await response.text()
             if response.status == 200:
                 print('ok')
-            elif 'You have already reached the limit of active Save Page Now sessions.' in r:
+                return
+            if 'You have already reached the limit of active Save Page Now sessions.' in r:
                 print('limit')
             else:
                 print(r)
+            await asyncio.sleep(10)
 
     @property
     def wait(self):
