@@ -211,9 +211,9 @@ class worker:
             r = await self.post(url,json=data,headers=headers)
             print('toupiao','mobile codeverify',r)
         elif 'qq' in url:
-            name = str(random.randrange(1000000000))
+            name = str(random.randrange(10000,1000000000))
             data = {
-                'id':get_id(),
+                'id':cid,
                 'username':name,
                 'password':get_password(),
                 'area':get_area(),
@@ -224,10 +224,13 @@ class worker:
                 return 'err'
             print('toupiao','qq',data)
             self.set_alive()
+
             # 提交后跳转
             url = f"{host}qq/verify?name={name}"
             html = await self.get(url,headers=headers)
             self.set_alive()
+
+            headers['Referer'] = url
             url = f'{host}/qq/verify'
             data = {
                 'name':name,
