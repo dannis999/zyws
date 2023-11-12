@@ -35,7 +35,7 @@ class wbSaver:
         }
         headers = self.get_headers()
         url = self.url + '/' + url
-        async with self.session.post(url,headers=headers,json=data) as response:
+        async with self.session.post(url,headers=headers,data=data) as response:
             r = await response.text()
             if response.status == 200:
                 print('ok')
@@ -44,7 +44,7 @@ class wbSaver:
 
     @property
     def wait(self):
-        return random.uniform(5,10)
+        return random.uniform(2,5)
 
     async def save(self,url):
         '返回name,msg'
