@@ -53,8 +53,13 @@ class wbSaver:
             await self.save_req(url)
         except Exception as e:
             print(repr(e))
+    
+    async def task_exit(self,t):
+        await asyncio.sleep(t)
+        exit()
 
-    async def run(self):
+    async def run(self,t):
+        t = asyncio.Task(self.task_exit(t))
         urls = list(url_iter())
         random.shuffle(urls)
         async with aiohttp.ClientSession() as session:
@@ -67,7 +72,7 @@ class wbSaver:
 
 async def main():
     w = wbSaver()
-    await w.run()
+    await w.run(60)
 
 if __name__ == '__main__':
     asyncio.run(main())
