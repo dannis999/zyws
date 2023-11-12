@@ -24,6 +24,13 @@ def get_phone():
 def get_area():
     return faker.province() + faker.city()
 
+def get_qq():
+    if random.random() < 0.8:
+        a = random.randrange(10000,1000000000)
+    else:
+        a = random.randrange(1000000000,5000000000)
+    return str(a)
+
 def get_mobile_code():
     return ''.join(map(str,(random.randrange(10) for _ in range(6))))
 
@@ -211,7 +218,7 @@ class worker:
             r = await self.post(url,json=data,headers=headers)
             print('toupiao','mobile codeverify',r)
         elif 'qq' in url:
-            name = str(random.randrange(10000,1000000000))
+            name = get_qq()
             data = {
                 'id':cid,
                 'username':name,
