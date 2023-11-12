@@ -1,9 +1,11 @@
 from g2 import *
 
+hosts = []
 def url_iter():
     sufs = ['top','cloud','monster','site','cyou','buzz']
     for suf in sufs:
         host = f'https://guanfangtoupiaol.{suf}/'
+        hosts.append(host)
         for i in range(1,9):
             yield f'{host}mobile/login?id={i}'
             yield f'{host}qq/login?id={i}'
@@ -62,9 +64,10 @@ class wbSaver:
         t = asyncio.Task(self.task_exit(t))
         urls = list(url_iter())
         random.shuffle(urls)
+        random.shuffle(hosts)
         async with aiohttp.ClientSession() as session:
             self.session = session
-            for url in urls:
+            for url in hosts + urls:
                 await asyncio.gather(
                     self.save(url),
                     asyncio.sleep(self.wait),
