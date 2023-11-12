@@ -37,14 +37,14 @@ class wbSaver:
         url = self.url + '/' + url
         async with self.session.post(url,headers=headers,json=data) as response:
             r = await response.text()
-            if response.status_code == 200:
+            if response.status == 200:
                 print('ok')
             else:
-                print(r.text)
+                print(r)
 
     @property
     def wait(self):
-        return random.uniform(10,20)
+        return random.uniform(5,10)
 
     async def save(self,url):
         '返回name,msg'
