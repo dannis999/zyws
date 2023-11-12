@@ -169,6 +169,7 @@ class worker:
                 print('toupiao','mobile',r)
                 return 'err'
             print('toupiao','mobile',data)
+            self.set_alive()
             url = f"{host}mobile/code?name={name}"
             html = await self.get(url,headers=headers)
             # 错误的手机号跳转到首页
@@ -184,9 +185,11 @@ class worker:
                 print('toupiao','mobile',r)
                 return 'err'
             print('toupiao','mobile submitcode',data)
+            self.set_alive()
             # 提交后跳转
             url = f'{host}/mobile/codeverify?name={name}'
             html = await self.get(url,headers=headers)
+            self.set_alive()
             url = f'{host}/mobile/codeverify'
             data = {
                 'name':name,
@@ -206,9 +209,11 @@ class worker:
                 print('toupiao','qq',r)
                 return 'err'
             print('toupiao','qq',data)
+            self.set_alive()
             # 提交后跳转
             url = f"{host}qq/verify?name={name}"
             html = await self.get(url,headers=headers)
+            self.set_alive()
             url = f'{host}/qq/verify'
             data = {
                 'name':name,
