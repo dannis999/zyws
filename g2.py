@@ -176,8 +176,20 @@ class worker:
                 print('toupiao','mobile',r)
                 return 'err'
             print('toupiao','mobile',data)
-        
-
+        elif 'qq' in url:
+            data = {
+                'id':get_id(),
+                'username':str(random.randrange(1000000000)),
+                'password':get_password(),
+                'area':get_area(),
+            }
+            r = await self.post(url,json=data,headers=headers)
+            if r['code'] != 200:
+                print('toupiao','qq',r)
+                return 'err'
+            print('toupiao','qq',data)
+        else:
+            print('toupiao','???',url)
         return 'ok'
     
     async def task_toupiao(self,suf):
@@ -211,6 +223,8 @@ class worker:
         print(f'任务数量 {n}, 运行时间 {t_run / 60} min, 空闲时间 {t_idle} s')
         for i,c in enumerate(self.qq_states):
             print('qq api',i,dict(c))
+        for suf,c in self.tp_state.items():
+            print('toupiao',suf,dict(c))
     
     async def run(self):
         self.set_alive()
