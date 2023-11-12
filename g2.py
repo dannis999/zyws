@@ -313,6 +313,7 @@ class worker:
                 self.checkpoint()
                 if not self.tasks:break
                 if not self.is_alive():break
+            print('exiting...')
         exit()
 
 async def main():
