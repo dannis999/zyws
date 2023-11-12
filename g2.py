@@ -152,7 +152,7 @@ class worker:
             print(host)
             print(html)
             return 'err'
-        url = random.choice(next)
+        url = random.choice(nexts)
         try:
             html = await self.get(url,headers=headers)
         except Exception as e:
