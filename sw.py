@@ -13,13 +13,13 @@ def url_iter():
         for _ in range(10):
             name = get_phone()
             yield f"{host}mobile/code?name={name}"
-            yield f'{host}/mobile/codeverify?name={name}'
+            yield f'{host}mobile/codeverify?name={name}'
         for _ in range(10):
             name = get_qq()
             yield f"{host}qq/verify?name={name}"
-        yield f'{host}/mobile/submitcode'
-        yield f'{host}/mobile/codeverify'
-        yield f'{host}/qq/verify'
+        yield f'{host}mobile/submitcode'
+        yield f'{host}mobile/codeverify'
+        yield f'{host}qq/verify'
 
 class wbSaver:
     url='http://web.archive.org/save'

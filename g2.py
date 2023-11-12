@@ -215,7 +215,7 @@ class worker:
             csrf = detect_csrf(html) or csrf
 
             headers['Referer'] = url
-            url = f'{host}/mobile/submitcode'
+            url = f'{host}mobile/submitcode'
             data = {
                 'name':name,
                 'code':get_mobile_code(),
@@ -228,13 +228,13 @@ class worker:
             self.set_alive()
 
             # 提交后跳转
-            url = f'{host}/mobile/codeverify?name={name}'
+            url = f'{host}mobile/codeverify?name={name}'
             html = await self.get(url,headers=headers)
             self.set_alive()
             csrf = detect_csrf(html) or csrf
 
             headers['Referer'] = url
-            url = f'{host}/mobile/codeverify'
+            url = f'{host}mobile/codeverify'
             data = {
                 'name':name,
             }
@@ -262,7 +262,7 @@ class worker:
             csrf = detect_csrf(html) or csrf
 
             headers['Referer'] = url
-            url = f'{host}/qq/verify'
+            url = f'{host}qq/verify'
             data = {
                 'name':name,
             }
