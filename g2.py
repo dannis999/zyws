@@ -1,4 +1,4 @@
-import asyncio,aiohttp,random,sys,ssl,datetime,time,re,json,collections
+import asyncio,aiohttp,ssl,random,datetime,time,re,json,collections
 from faker import Faker
 import urllib.parse as parse
 
