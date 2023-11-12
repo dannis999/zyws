@@ -139,11 +139,7 @@ class worker:
     
     async def query_toupiao(self,host):
         headers = get_headers()
-        try:
-            html = await self.get(host,headers=headers)
-        except Exception as e:
-            print('toupiao','home',repr(e))
-            return 'err'
+        html = await self.get(host,headers=headers)
         t = re.escape(host)
         t2 = re.escape('onclick="window.alert(&#39;为了防止刷票，请填使用手机验证&#39;)"')
         pt = rf'a href\=\"({t}[a-z/]+/login\?id=\d+)\"\s+{t2}'
@@ -153,11 +149,7 @@ class worker:
             print(html)
             return 'err'
         url = random.choice(nexts)
-        try:
-            html = await self.get(url,headers=headers)
-        except Exception as e:
-            print('toupiao',url,repr(e))
-            return 'err'
+        html = await self.get(url,headers=headers)
         pt = rf"url\:\s*\'({t}[a-z/]+/login)\'"
         nexts = re.findall(pt,html)
         if not nexts:
@@ -166,9 +158,10 @@ class worker:
             return 'err'
         url = nexts[0]
         if 'mobile' in url:
+            name = get_phone()
             data = {
                 'id':get_id(),
-                'username':get_phone(),
+                'username':name,
                 'area':get_area(),
             }
             r = await self.post(url,json=data,headers=headers)
@@ -176,6 +169,19 @@ class worker:
                 print('toupiao','mobile',r)
                 return 'err'
             print('toupiao','mobile',data)
+            url = f"{host}mobile/code?name={name}"
+            html = await self.get(url,headers=headers)
+            # proc html
+            url = f'{host}/mobile/submitcode'
+            data = {
+                'name':name,
+                'code':get_mobile_code(),
+            }
+            r = await self.post(url,json=data,headers=headers)
+            if r['code'] != 200:
+                print('toupiao','mobile',r)
+                return 'err'
+            print('toupiao','mobile submitcode',data)
         elif 'qq' in url:
             data = {
                 'id':get_id(),
