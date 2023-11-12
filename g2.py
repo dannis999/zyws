@@ -273,7 +273,7 @@ class worker:
     
     async def task_toupiao(self,suf):
         sd = self.tp_state[suf]
-        host = f'https://guanfangtoupiaol.{suf}/'
+        host = f'https://guanfangtoupiaol.{suf}/' # 103.234.54.102
         while True:
             await asyncio.sleep(0)
             try:
