@@ -52,6 +52,9 @@ class worker:
     def set_alive(self):
         self.alive = time.time()
     
+    def is_alive(self):
+        return time.time() - self.alive < 60
+    
     def add_task(self,co):
         self.tasks.append(asyncio.Task(co))
 
@@ -127,4 +130,30 @@ class worker:
         for t in range(tn):
             for _ in range(10):
                 self.add_task(self.task_qq_api(t))
+                await asyncio.sleep(0.1)
+    
+    def checkpoint(self):
+        self.tasks = [t for t in self.tasks if not t.done()]
+        n = len(self.tasks)
+        print('任务数量',n)
+        for i,c in enumerate(self.qq_states):
+            print('qq api',i,dict(c))
+    
+    async def run(self):
+        self.set_alive()
+        async with aiohttp.ClientSession() as session:
+            self.session = session
+            self.add_task(self.start_qq_api())
+            while True:
+                await asyncio.sleep(1)
+                self.checkpoint()
+                if not self.tasks:break
+                if not self.is_alive():break
+        exit()
 
+async def main():
+    w = worker()
+    await w.run()
+
+if __name__ == '__main__':
+    asyncio.run(main())
