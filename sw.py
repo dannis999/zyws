@@ -41,6 +41,8 @@ class wbSaver:
             r = await response.text()
             if response.status == 200:
                 print('ok')
+            elif 'You have already reached the limit of active Save Page Now sessions.' in r:
+                print('limit')
             else:
                 print(r)
 
