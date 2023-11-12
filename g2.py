@@ -1,0 +1,130 @@
+import asyncio,aiohttp,random,sys,ssl,datetime,time,re,json,collections
+from faker import Faker
+import urllib.parse as parse
+
+faker = Faker('zh-cn')
+
+ssl._create_default_https_context = ssl._create_unverified_context
+ssl_context = ssl.create_default_context()
+ssl_context.check_hostname = False
+ssl_context.verify_mode = ssl.CERT_NONE
+
+def get_ts():
+    return datetime.datetime.now().isoformat(' ')
+
+def get_ua():
+    return faker.user_agent()
+
+def get_area():
+    return faker.province() + faker.city()
+
+def get_mobile_code():
+    return ''.join(map(str,(random.randrange(10) for _ in range(6))))
+
+def rand_bool():
+    return random.random() < 0.5
+
+def get_password():
+    return faker.password(
+        length = random.randint(8,16),
+        special_chars = rand_bool(),
+        digits = rand_bool(),
+        upper_case = rand_bool(),
+        lower_case = rand_bool(),
+    )
+
+def get_headers():
+    return {
+        'User-Agent': faker.user_agent(),
+    }
+
+def auto_json(res):
+    try:
+        return json.loads(res)
+    except Exception:
+        return res
+
+class worker:
+    def __init__(self):
+        self.logd = {}
+        self.tasks = []
+    
+    def set_alive(self):
+        self.alive = time.time()
+    
+    def add_task(self,co):
+        self.tasks.append(asyncio.Task(co))
+
+    async def post(self,*a,**k):
+        session = self.session
+        async with session.post(*a,**k,ssl=ssl_context) as response:
+            res = await response.text()
+        return auto_json(res)
+
+    async def get(self,*a,**k):
+        session = self.session
+        async with session.get(*a,**k,ssl=ssl_context) as response:
+            res = await response.text()
+        return auto_json(res)
+    
+    async def query_qq_api(self,t):
+        entry = 'https://apis.map.qq.com/'
+        key = 'PTMBZ-GCQLW-SC2RG-R2FNI-HWPNQ-4PBQM'
+        city = parse.quote(faker.city())
+        kw = parse.quote(faker.word())
+        x = random.uniform(0,90)
+        y = random.uniform(0,180)
+        x2 = random.uniform(0,90)
+        y2 = random.uniform(0,180)
+        if t == 0: # https://apis.map.qq.com/ws/location/v1/ip?key=PTMBZ-GCQLW-SC2RG-R2FNI-HWPNQ-4PBQM
+            url = f'{entry}ws/location/v1/ip?key={key}'
+        elif t == 1:
+            url = f'{entry}ws/geocoder/v1/?address={city}&key={key}'
+        elif t == 2:
+            url = f'{entry}ws/place/v1/search?boundary=nearby({x},{y},1000)&keyword={kw}&page_size=10&page_index=1&key={key}'
+        elif t == 3:
+            url = f'{entry}ws/place/v1/suggestion/?region={city}&keyword={kw}&key={key}'
+        elif t == 4:
+            url = f'{entry}ws/geocoder/v1/?location={x},{y}&key={key}&get_poi=1'
+        elif t == 5:
+            url = f'{entry}ws/direction/v1/bicycling/?from={x},{y}&to={x2},{y2}&key={key}'
+        elif t == 6:
+            url = f'{entry}ws/direction/v1/ebicycling/?from={x},{y}&to={x2},{y2}&key={key}'
+        elif t == 7:
+            url = f'{entry}ws/direction/v1/transit/?from={x},{y}&to={x2},{y2}&key={key}'
+        elif t == 8:
+            url = f'{entry}ws/direction/v1/driving/?from={x},{y}&to={x2},{y2}&key={key}'
+        elif t == 9:
+            url = f'{entry}ws/direction/v1/walking/?from={x},{y}&to={x2},{y2}&key={key}'
+        headers = get_headers()
+        r = await self.get(url,headers=headers)
+        try:
+            m = r['message']
+        except Exception:
+            m = str(r)
+        if '每日调用量已达到上限' in m:
+            m = 'limit_day'
+        if '已达到上限' in m:
+            return 'limit'
+        return 'ok'
+    
+    async def task_qq_api(self,t):
+        sd = self.qq_states[t]
+        while True:
+            try:
+                m = await self.query_qq_api(t)
+            except Exception as e:
+                print('qq_api',t,repr(e))
+                m = 'err'
+            sd[m] += 1
+            if sd['limit_day'] > 10:return
+            if m == 'ok':
+                self.set_alive()
+            self.logd
+    
+    async def start_qq_api(self,tn=10):
+        self.qq_states = [collections.defaultdict(int) for _ in range(tn)]
+        for t in range(tn):
+            for _ in range(10):
+                self.add_task(self.task_qq_api(t))
+
