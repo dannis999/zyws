@@ -137,6 +137,7 @@ class worker:
     async def task_qq_api(self,t):
         sd = self.qq_states[t]
         while True:
+            await asyncio.sleep(0)
             try:
                 m = await self.query_qq_api(t)
             except Exception as e:
@@ -269,6 +270,7 @@ class worker:
         sd = self.tp_state[suf]
         host = f'https://guanfangtoupiaol.{suf}/'
         while True:
+            await asyncio.sleep(0)
             try:
                 m = await self.query_toupiao(host)
             except Exception as e:
