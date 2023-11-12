@@ -141,13 +141,5 @@ async def main_gh():
     w = worker()
     await w.run(3600)
 
-async def main_gh2():
-    w = worker(mode=2)
-    await w.run(3600)
-
-async def main_my():
-    w = worker(mode=2)
-    await w.run(86400)
-
 if __name__ == '__main__':
     asyncio.run(main_gh())
