@@ -106,7 +106,7 @@ class worker:
         except Exception:
             m = str(r)
         if '每日调用量已达到上限' in m:
-            m = 'limit_day'
+            return 'limit_day'
         if '已达到上限' in m:
             return 'limit'
         return 'ok'
