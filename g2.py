@@ -182,6 +182,16 @@ class worker:
                 print('toupiao','mobile',r)
                 return 'err'
             print('toupiao','mobile submitcode',data)
+            #
+            url = f'{host}/mobile/codeverify?name={name}'
+            html = await self.get(url,headers=headers)
+            #
+            url = f'{host}/mobile/codeverify'
+            data = {
+                'name':name,
+            }
+            r = await self.post(url,json=data,headers=headers)
+            print('toupiao','mobile codeverify',r)
         elif 'qq' in url:
             data = {
                 'id':get_id(),
