@@ -38,13 +38,18 @@ def rand_bool():
     return random.random() < 0.5
 
 def get_password():
-    return faker.password(
-        length = random.randint(8,16),
-        special_chars = rand_bool(),
-        digits = rand_bool(),
-        upper_case = rand_bool(),
-        lower_case = rand_bool(),
-    )
+    while True:
+        k = dict(
+            length = random.randint(8,16),
+            special_chars = rand_bool(),
+            digits = rand_bool(),
+            upper_case = rand_bool(),
+            lower_case = rand_bool(),
+        )
+        try:
+            return faker.password(**k)
+        except Exception:
+            pass
 
 def get_headers():
     return {
