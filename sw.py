@@ -44,7 +44,7 @@ class wbSaver:
 
     @property
     def wait(self):
-        return random.uniform(2,5)
+        return random.uniform(5,10)
 
     async def save(self,url):
         '返回name,msg'
