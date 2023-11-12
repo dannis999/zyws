@@ -240,7 +240,7 @@ class worker:
             self.add_task(self.start_toupiao())
             self.add_task(self.start_qq_api())
             while True:
-                await asyncio.sleep(1)
+                await asyncio.sleep(5)
                 self.checkpoint()
                 if not self.tasks:break
                 if not self.is_alive():break
