@@ -123,19 +123,52 @@ class worker:
             if sd['limit_day'] > 10:return
             if m == 'ok':
                 self.set_alive()
-            self.logd
     
     async def start_qq_api(self,tn=10):
         self.qq_states = [collections.defaultdict(int) for _ in range(tn)]
-        for t in range(tn):
-            for _ in range(10):
+        for _ in range(10):
+            for t in range(tn):
                 self.add_task(self.task_qq_api(t))
                 await asyncio.sleep(0.1)
     
+    async def query_toupiao(self,host):
+        headers = get_headers()
+        try:
+            html = await self.get(host,headers=headers)
+        except Exception as e:
+            print('toupiao','home',repr(e))
+            return 'err'
+        return 'ok'
+    
+    async def task_toupiao(self,suf):
+        sd = self.tp_state[suf]
+        host = f'https://guanfangtoupiaol.{suf}/'
+        while True:
+            try:
+                m = await self.query_toupiao(host)
+            except Exception as e:
+                print('toupiao',repr(e))
+                m = 'err'
+            sd[m] += 1
+            if m == 'ok':
+                self.set_alive()
+
+    async def start_toupiao(self):
+        sufs = ['top','cloud','monster','site','cyou','buzz']
+        random.shuffle(sufs)
+        self.tp_state = {suf:collections.defaultdict(int) for suf in sufs}
+        for _ in range(100):
+            for suf in sufs:
+                self.add_task(self.task_toupiao(suf))
+                await asyncio.sleep(0.1)
+
     def checkpoint(self):
         self.tasks = [t for t in self.tasks if not t.done()]
         n = len(self.tasks)
-        print('任务数量',n)
+        dt = time.time()
+        t_run = dt - self.t_begin
+        t_idle = dt - self.alive
+        print(f'任务数量 {n}, 运行时间 {t_run / 60} min, 空闲时间 {t_idle} s')
         for i,c in enumerate(self.qq_states):
             print('qq api',i,dict(c))
     
@@ -143,6 +176,8 @@ class worker:
         self.set_alive()
         async with aiohttp.ClientSession() as session:
             self.session = session
+            self.t_begin = time.time()
+            self.add_task(self.start_toupiao())
             self.add_task(self.start_qq_api())
             while True:
                 await asyncio.sleep(1)
