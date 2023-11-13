@@ -80,7 +80,7 @@ class wbSaver:
 
 async def main():
     w = wbSaver()
-    await w.run(300)
+    await w.run(600)
 
 if __name__ == '__main__':
     asyncio.run(main())
