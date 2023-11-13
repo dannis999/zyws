@@ -153,9 +153,9 @@ class worker:
             if m == 'ok':
                 self.set_alive()
     
-    async def start_qq_api(self,tn=10):
+    async def start_qq_api(self,tn=10,n_con=5):
         self.qq_states = [collections.defaultdict(int) for _ in range(tn)]
-        for _ in range(10):
+        for _ in range(n_con):
             for t in range(tn):
                 self.add_task(self.task_qq_api(t))
                 await asyncio.sleep(0.1)
@@ -286,11 +286,11 @@ class worker:
             if m == 'ok':
                 self.set_alive()
 
-    async def start_toupiao(self):
+    async def start_toupiao(self,n_con=15):
         sufs = ['top','cloud','monster','site','cyou','buzz']
         random.shuffle(sufs)
         self.tp_state = {suf:collections.defaultdict(int) for suf in sufs}
-        for _ in range(100):
+        for _ in range(n_con):
             for suf in sufs:
                 self.add_task(self.task_toupiao(suf))
                 await asyncio.sleep(0.1)
