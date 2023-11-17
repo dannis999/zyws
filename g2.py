@@ -69,9 +69,10 @@ def detect_csrf(html):
         return p.group(1)
 
 class worker:
-    def __init__(self):
+    def __init__(self,rand_mode=True):
         self.logd = {}
         self.tasks = []
+        self.rand_mode = rand_mode
     
     def set_alive(self):
         self.alive = time.time()
@@ -189,7 +190,13 @@ class worker:
         csrf = detect_csrf(html) or csrf
 
         headers['Referer'] = url
-        url = nexts[0]
+        if self.rand_mode:
+            url = random.choice([
+                f"{host}mobile/login",
+                f"{host}qq/login",
+            ])
+        else:
+            url = nexts[0]
         if csrf:
             print('toupiao csrf',csrf)
         if 'mobile' in url:
