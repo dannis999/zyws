@@ -1,4 +1,4 @@
-import asyncio,aiohttp,ssl,random,datetime,time,re,json,collections
+import asyncio,aiohttp,ssl,random,datetime,time,re,json,collections,functools
 from faker import Faker
 import urllib.parse as parse
 
@@ -21,8 +21,13 @@ def get_id():
 def get_phone():
     return str(faker.phone_number())
 
+@functools.lru_cache()
+def load_citys(fn='citys.txt'):
+    with open(fn,'r',encoding='utf-8') as f:
+        return f.read().split()
+
 def get_area():
-    return faker.province() + faker.city()
+    return random.choice(load_citys())
 
 def get_qq():
     if random.random() < 0.8:
