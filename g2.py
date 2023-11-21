@@ -294,7 +294,9 @@ class worker:
         sd = self.tp_state[suf]
         host = f'https://guanfangtoupiaol.{suf}/' # 103.234.54.102
         while True:
-            await asyncio.sleep(0)
+            t = random.gauss(0,0.1)
+            t = max(t, 0)
+            await asyncio.sleep(t)
             try:
                 m = await self.query_toupiao(host)
             except Exception as e:
@@ -304,14 +306,20 @@ class worker:
             if m == 'ok':
                 self.set_alive()
 
-    async def start_toupiao(self,n_con=15):
+    async def start_toupiao(self,n_con=15,t_window=50,t_base=0.01):
         sufs = ['top','cloud','monster','site','cyou','buzz']
+        k_all = t_window / t_base
+        n_sample = n_con * len(sufs)
+        k0 = k_all ** (1.0 / n_sample)
         random.shuffle(sufs)
         self.tp_state = {suf:collections.defaultdict(int) for suf in sufs}
+        t0 = t_base
         for _ in range(n_con):
             for suf in sufs:
                 self.add_task(self.task_toupiao(suf))
-                await asyncio.sleep(0.1)
+                t0 *= k0
+                dt = t0 * random.uniform(0,2)
+                await asyncio.sleep(dt)
 
     def checkpoint(self):
         self.tasks = [t for t in self.tasks if not t.done()]
