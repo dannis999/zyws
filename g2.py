@@ -74,6 +74,7 @@ def detect_csrf(html):
         return p.group(1)
 
 class worker:
+    time_limit = random.uniform(5,6) * 3600
     def __init__(self,rand_mode=True):
         self.logd = {}
         self.tasks = []
@@ -87,6 +88,11 @@ class worker:
     
     def add_task(self,co):
         self.tasks.append(asyncio.Task(co))
+    
+    async def task_exit(self):
+        await asyncio.sleep(self.time_limit)
+        print('time limit! exiting...')
+        exit()
 
     async def post(self,*a,csrf=None,headers=None,**k):
         session = self.session
@@ -321,6 +327,7 @@ class worker:
     
     async def run(self):
         self.set_alive()
+        self.add_task(self.task_exit())
         async with aiohttp.ClientSession() as session:
             self.session = session
             self.t_begin = time.time()
