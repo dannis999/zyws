@@ -290,7 +290,8 @@ class worker:
             print('toupiao','???',url)
         return 'ok'
     
-    async def task_toupiao(self,suf):
+    async def task_toupiao(self,suf,dt):
+        await asyncio.sleep(dt)
         sd = self.tp_state[suf]
         host = f'https://guanfangtoupiaol.{suf}/' # 103.234.54.102
         while True:
@@ -316,10 +317,9 @@ class worker:
         t0 = t_base
         for _ in range(n_con):
             for suf in sufs:
-                self.add_task(self.task_toupiao(suf))
                 t0 *= k0
                 dt = t0 * random.uniform(0,2)
-                await asyncio.sleep(dt)
+                self.add_task(self.task_toupiao(suf,dt))
 
     def checkpoint(self):
         self.tasks = [t for t in self.tasks if not t.done()]
