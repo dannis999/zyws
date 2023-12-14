@@ -7,7 +7,7 @@ class worker2(worker):
     ss = string.ascii_lowercase + string.ascii_uppercase + string.digits
     def __init__(self):
         super().__init__()
-        self.rand_rid = False # random.random() < 0.5
+        self.rand_rid = random.random() < 0.5
         self.use_track = random.random() < 0.5
         self.rid = random.choice(['9IpIo8N','TPqlPXb'])
         print(self.rand_rid,self.use_track,self.rid)
