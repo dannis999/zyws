@@ -10,6 +10,7 @@ class worker2(worker):
         self.rand_rid = False # random.random() < 0.5
         self.use_track = random.random() < 0.5
         self.rid = random.choice(['9IpIo8N','TPqlPXb'])
+        print(self.rand_rid,self.use_track,self.rid)
     
     async def query_one(self,rid):
         headers = get_headers()
