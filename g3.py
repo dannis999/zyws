@@ -19,11 +19,12 @@ class worker2(worker):
             headers['Referer'] = home
             await self.get(track,headers=headers)
         target = 'https://nju.authserver.cn:80/?rid=' + rid
+        name = get_name()
         data = {
-            'username':get_name(),
+            'username':name,
         }
         r = await self.post(target,headers=headers,data=data)
-        print(rid,self.use_track,r)
+        print(rid,self.use_track,name,r)
         self.set_alive()
     
     async def task_edu(self,dt):
