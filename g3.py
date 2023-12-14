@@ -42,6 +42,7 @@ class worker2(worker):
     async def start_edu(self,n_con=48,t_window=50,t_base=0.01):
         k_all = t_window / t_base
         k0 = k_all ** (1.0 / n_con)
+        t0 = t_base
         for _ in range(n_con):
             t0 *= k0
             dt = t0 * random.uniform(0,2)
